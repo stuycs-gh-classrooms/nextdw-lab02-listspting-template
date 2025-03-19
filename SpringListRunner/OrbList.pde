@@ -92,11 +92,11 @@ class OrbList {
   }//applySprings
 
   /*===========================
-    run()
+    run(boolean bounce)
 
     Call run on each node in the list.
     =========================*/
-  void run() {
+  void run(boolean boucne) {
 
   }//applySprings
 
@@ -113,13 +113,13 @@ class OrbList {
 
 
   /*===========================
-    getSelected(int x, int y)
+    getSelected(float x, float y)
 
     If there is a node at (x, y), return
     a reference to that node.
     Otherwise, return null.
 
-    See isSlected(int x, int y) in
+    See isSlected(float x, float y) in
     the Orb class (line 115).
     =========================*/
   OrbNode getSelected(int x, int y) {

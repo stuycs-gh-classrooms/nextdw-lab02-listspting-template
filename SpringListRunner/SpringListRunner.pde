@@ -21,18 +21,24 @@ Mouse Commands:
 =================================== */
 
 
-int NUM_ORBS = 8;
+int NUM_ORBS = 10;
 int MIN_SIZE = 10;
 int MAX_SIZE = 60;
 float MIN_MASS = 10;
 float MAX_MASS = 100;
-float GRAVITY = 1;
+float G_CONSTANT = 1;
+float D_COEF = 0.1;
 
-int SPRING_LENGTH = 75;
+int SPRING_LENGTH = 50;
 float  SPRING_K = 0.005;
 
-boolean moving;
-boolean earthGravity;
+int MOVING = 0;
+int BOUNCE = 1;
+int GRAVITY = 2;
+int DRAGF = 3;
+boolean[] toggles = new boolean[4];
+String[] modes = {"Moving", "Bounce", "Gravity", "Drag"};
+
 FixedOrb earth;
 
 OrbList slinky;
@@ -44,9 +50,6 @@ void setup() {
 
   slinky = new OrbList();
   slinky.populate(NUM_ORBS, true);
-
-  moving = false;
-  earthGravity = false;
 }//setup
 
 void draw() {
@@ -55,17 +58,15 @@ void draw() {
 
   slinky.display();
 
-  if (moving) {
+  if (toggles[MOVING]) {
 
     slinky.applySprings(SPRING_LENGTH, SPRING_K);
 
-    if (earthGravity) {
+    if (toggles[GRAVITY]) {
       slinky.applyGravity(earth, GRAVITY);
     }
-    slinky.run();
+    slinky.run(toggles[BOUNCE]);
   }//moving
-
-  //saveFrame("data/####-orbnode.png");
 }//draw
 
 void mousePressed() {
@@ -76,13 +77,11 @@ void mousePressed() {
 }//mousePressed
 
 void keyPressed() {
-  if (key == ' ') {
-    moving = !moving;
-  }
-  if (key == 'g') {
-    earthGravity = !earthGravity;
-  }
-  if (key == '=') {
+  if (key == ' ') { toggles[MOVING] = !toggles[MOVING]; }
+  if (key == 'g') { toggles[GRAVITY] = !toggles[GRAVITY]; }
+  if (key == 'b') { toggles[BOUNCE] = !toggles[BOUNCE]; }
+  if (key == 'd') { toggles[DRAGF] = !toggles[DRAGF]; }
+  if (key == '=' || key =='+') {
     slinky.addFront(new OrbNode());
   }
   if (key == '-') {
@@ -97,24 +96,22 @@ void keyPressed() {
 }//keyPressed
 
 
-
 void displayMode() {
-  //initial setup
-  color c;
   textAlign(LEFT, TOP);
-  textSize(15);
+  textSize(20);
   noStroke();
-  //red or green boxes
-  c = moving ? color(0, 255, 0) : color(255, 0, 0);
-  fill(c);
-  rect(0, 0, 53, 20);
-  c = earthGravity ? color(0, 255, 0) : color(255, 0, 0);
-  fill(c);
-  rect(60, 0, 101, 20);
+  int spacing = 85;
+  int x = 0;
 
-  stroke(0);
-  fill(0);
-  text("MOVING", 1, 3);
-  text("EARTH GRAVITY", 61, 3);
+  for (int m=0; m<toggles.length; m++) {
+    //set box color
+    if (toggles[m]) { fill(0, 255, 0); }
+    else { fill(255, 0, 0); }
 
-}//displayMode
+    float w = textWidth(modes[m]);
+    rect(x, 0, w+5, 20);
+    fill(0);
+    text(modes[m], x+2, 2);
+    x+= w+5;
+  }
+}//display

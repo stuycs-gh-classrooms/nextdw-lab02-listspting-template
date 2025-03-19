@@ -4,50 +4,43 @@ class OrbNode extends Orb {
   OrbNode previous;
 
   OrbNode() {
-    super();
-    next = null;
-    previous = null;
-  }//constructor
-
-  OrbNode (int x, int y, int s, float m, OrbNode n, OrbNode p) {
+    next = previous = null;
+  }//default constructor
+  OrbNode(float x, float y, float s, float m) {
     super(x, y, s, m);
-    next = n;
-    previous = p;
+    next = previous = null;
   }//constructor
 
-  OrbNode(OrbNode n, OrbNode p) {
-    super();
-    next = n;
-    previous = p;
-  }//constructor
+  void display() {
+    super.display();
+    if (next != null) {
+      float dnext = this.center.dist(next.center);
+      if (dnext < SPRING_LENGTH) { stroke(0, 255, 0); }
+      else if (dnext > SPRING_LENGTH) { stroke(255, 0, 0); }
+      else { stroke(0); }
+      line(this.center.x, this.center.y+2, next.center.x, next.center.y+2);
+    }//next spring
+
+    if (previous != null) {
+      float dprev = this.center.dist(previous.center);
+      if (dprev < SPRING_LENGTH) { stroke(0, 255, 0); }
+      else if (dprev > SPRING_LENGTH) { stroke(255, 0, 0); }
+      else { stroke(0); }
+      line(this.center.x, this.center.y-2, previous.center.x, previous.center.y-2);
+    }//next spring
+  }//drawSpring
 
   void applySprings(int springLength, float springK) {
     if (next != null) {
-      PVector s = this.getSpring(next, springLength, springK);
-      this.applyForce(s);
-    }//there's a next
+      PVector sforce = getSpring(next, springLength, springK);
+      applyForce(sforce);
+    }
     if (previous != null) {
-      PVector s = this.getSpring(previous, springLength, springK);
-      this.applyForce(s);
-    }//there's a previous
-  }//applySprings
+      PVector sforce = getSpring(previous, springLength, springK);
+      applyForce(sforce);
+    }
+  }///applySprings
 
-  void display() {
-    if (next != null) {
-      float d = this.position.dist(next.position);
-      if (d < SPRING_LENGTH) {
-        stroke(0, 255, 0);
-      }
-      else if (d > SPRING_LENGTH) {
-        stroke(255, 0, 0);
-      }
-      else {
-        stroke(0);
-      }
-      line(this.position.x, this.position.y, next.position.x, next.position.y);
-    }//spring line
-    stroke(0);
-    super.display();
-  }//display();
 
-}// OrbNode
+
+}//OrbNode

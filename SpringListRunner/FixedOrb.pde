@@ -1,12 +1,17 @@
 class FixedOrb extends Orb {
 
-  FixedOrb(int x, int y, int s, float m) {
+  FixedOrb(float x, float y, float s, float m) {
     super(x, y, s, m);
-    c = color(0);
-  }//FixedOrb
+    c = color(255, 0, 0);
+  }
 
-  void run() {
-    //do nothing!
-  }//run
+  FixedOrb() {
+    super();
+    c = color(255, 0, 0);
+  }
 
-}//FixedOrb
+  void move(boolean bounce) {
+    //do nothing
+  }
+
+}//fixedOrb
